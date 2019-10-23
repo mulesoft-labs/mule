@@ -65,8 +65,8 @@ public class NoSourcePolicy implements SourcePolicy, Disposable {
               .doOnNext(result -> result.apply(spfr -> commonPolicy.finishFlowProcessing(spfr.getMessagingException().getEvent(),
                                                                                          result, spfr.getMessagingException()),
                                                spsr -> commonPolicy.finishFlowProcessing(spsr.getResult(), result)))
-              .onErrorContinue(MessagingException.class, (t, e) -> {
-                final MessagingException me = (MessagingException) t;
+              .doOnError(throwable -> {
+                final MessagingException me = (MessagingException) throwable;
                 final InternalEvent event = (InternalEvent) me.getEvent();
 
                 commonPolicy.finishFlowProcessing(event,
